@@ -25,8 +25,8 @@ const userSchema = new mongoose.Schema({
 const Users = mongoose.model("Users", userSchema);
 
 const messageSchema = new mongoose.Schema({
-  // senderId: { type: mongoose.Types.ObjectId, required: true },
-  // receiverId: { type: mongoose.Types.ObjectId, required: true },
+  senderId: { type: String, required: true },
+  receiverId: { type: String, required: true },
   time: { type: Date, default: Date.now },
   message: { type: String, required: true },
   isGroupChat: { type: Boolean, default: false },
@@ -60,6 +60,7 @@ app.post("/login", async (req, res) => {
         message: "Login Successful",
         sessionId,
         name: details[0].name,
+        userId: details[0]._id,
       });
     }
     return res.json({ success: false, message: "Invalid credentials" });
@@ -100,9 +101,10 @@ app.get("/people", async (req, res) => {
 
 app.get("/messages/:id", async (req, res) => {
   const { id } = req.params;
+  console.log(id);
   const messages = await Messages.find({
     $or: [{ senderId: id }, { receiverId: id }],
-  });
+  }).sort({ time: 1 });
   return res.json({ success: true, data: messages });
 });
 

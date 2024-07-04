@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import People from "./components/People";
+import Chat from "./components/Chat";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/people" element={<People />} />
+          <Route path="/chat/:id" element={<Chat />} />
         </Routes>
       </BrowserRouter>
     </>

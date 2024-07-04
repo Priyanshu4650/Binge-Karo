@@ -5,8 +5,16 @@ const Chat = () => {
   const { id } = useParams();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [userId, setUserId] = useState(null); // Set this from the login session
 
   useEffect(() => {
+    // Fetch the logged-in user ID from localStorage or any other state management
+    const fetchUserId = () => {
+      const storedUserId = localStorage.getItem("userId"); // Ensure this is set during login
+      setUserId(storedUserId);
+    };
+    fetchUserId();
+
     const fetchMessages = async () => {
       try {
         const response = await fetch(`http://localhost:5000/messages/${id}`, {
@@ -30,13 +38,14 @@ const Chat = () => {
   }, [id]);
 
   const sendMessage = async () => {
+    console.log(userId, id, message);
     try {
       const response = await fetch("http://localhost:5000/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ receiverId: id, message }),
+        body: JSON.stringify({ senderId: userId, receiverId: id, message }),
       });
       if (!response.ok) {
         throw new Error("Network response not ok");
@@ -55,7 +64,10 @@ const Chat = () => {
       <h1>Chat</h1>
       <div>
         {messages.map((msg, index) => (
-          <div key={index}>{msg.message}</div>
+          <div key={index}>
+            <strong>{msg.senderId === userId ? "Me" : "Them"}: </strong>
+            {msg.message}
+          </div>
         ))}
       </div>
       <input

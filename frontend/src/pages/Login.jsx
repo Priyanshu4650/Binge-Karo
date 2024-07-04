@@ -63,6 +63,7 @@ const Login = () => {
         alert(json.message);
         localStorage.setItem("SID", json.sessionId); // Save session ID to local storage
         localStorage.setItem("NAME", json.name);
+        localStorage.setItem("userId", json.userId);
         navigate("/"); // Redirect to home page or another page
       } else {
         alert("Invalid credentials");
