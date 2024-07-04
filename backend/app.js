@@ -25,16 +25,14 @@ const userSchema = new mongoose.Schema({
 const Users = mongoose.model("Users", userSchema);
 
 const messageSchema = new mongoose.Schema({
-  chat: {
-    senderId: { type: mongoose.Types.ObjectId, required: true },
-    receiverId: { type: mongoose.Types.ObjectId, required: true },
-    time: { type: Date, default: Date.now }, // Use Date type for time
-    message: { type: String, required: true },
-  },
-  isGroupChat: { type: Boolean, default: false }, // Corrected definition
+  // senderId: { type: mongoose.Types.ObjectId, required: true },
+  // receiverId: { type: mongoose.Types.ObjectId, required: true },
+  time: { type: Date, default: Date.now },
+  message: { type: String, required: true },
+  isGroupChat: { type: Boolean, default: false },
 });
 
-const Chats = mongoose.model("chats", messageSchema);
+const Messages = mongoose.model("Messages", messageSchema);
 
 const port = 5000;
 
@@ -55,9 +53,7 @@ app.post("/login", async (req, res) => {
 
   try {
     const details = await Users.find({ username, password });
-    console.log(details, details.length);
-
-    if (details) {
+    if (details.length > 0) {
       const sessionId = new Date().getTime().toString();
       return res.json({
         success: true,
@@ -66,9 +62,11 @@ app.post("/login", async (req, res) => {
         name: details[0].name,
       });
     }
-
     return res.json({ success: false, message: "Invalid credentials" });
-  } catch (e) {}
+  } catch (e) {
+    console.error(e.message);
+    return res.json({ success: false, message: "An error occurred" });
+  }
 });
 
 app.get("/register", (req, res) => {
@@ -88,10 +86,31 @@ app.post("/register", async (req, res) => {
     }
 
     const result = await Users.insertMany({ name, username, password });
-    console.log(result);
-
     return res.json({ success: true, message: "Registered Successfully" });
-  } catch (e) {}
+  } catch (e) {
+    console.error(e.message);
+    return res.json({ success: false, message: "An error occurred" });
+  }
+});
+
+app.get("/people", async (req, res) => {
+  const results = await Users.find();
+  return res.json({ success: true, title: "People", data: results });
+});
+
+app.get("/messages/:id", async (req, res) => {
+  const { id } = req.params;
+  const messages = await Messages.find({
+    $or: [{ senderId: id }, { receiverId: id }],
+  });
+  return res.json({ success: true, data: messages });
+});
+
+app.post("/messages", async (req, res) => {
+  const { senderId, receiverId, message } = req.body;
+  const newMessage = new Messages({ senderId, receiverId, message });
+  await newMessage.save();
+  return res.json({ success: true, data: newMessage });
 });
 
 // import { Server } from "socket.io";

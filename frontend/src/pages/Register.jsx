@@ -73,44 +73,61 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div className="App">
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            id="name"
-            type="text"
-            value={credentials.name}
-            onChange={handleChange}
-            placeholder="Name"
-            required
-          />
+        <div className="mb-3 row">
+          <label htmlFor="name" className="col-sm-2 col-form-label">
+            Name
+          </label>
+          <div className="col-sm-10">
+            <input
+              id="name"
+              className="col-sm-2 col-form-label"
+              type="text"
+              value={credentials.name}
+              onChange={handleChange}
+              placeholder="Name"
+              required
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={credentials.username}
-            onChange={handleChange}
-            placeholder="Username"
-            required
-          />
+        <div className="mb-3 row">
+          <label htmlFor="username" className="col-sm-2 col-form-label">
+            Username
+          </label>
+          <div className="col-sm-10">
+            <input
+              id="username"
+              className="col-sm-2 col-form-label"
+              type="text"
+              value={credentials.username}
+              onChange={handleChange}
+              placeholder="Username"
+              required
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={credentials.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-          />
+        <div className="mb-3 row">
+          <label htmlFor="password" className="col-sm-2 col-form-label">
+            Password
+          </label>
+          <div className="col-sm-10">
+            <input
+              id="password"
+              className="col-sm-2 col-form-label"
+              type="password"
+              value={credentials.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+            />
+          </div>
         </div>
-        <button type="submit">Register</button>
-        <a href="/login">Do you wanna get in?</a>
+        <button type="submit" className="btn btn-primary">
+          Login
+        </button>
       </form>
+      <a href="/register">Do you wanna register?</a>
     </div>
   );
 };

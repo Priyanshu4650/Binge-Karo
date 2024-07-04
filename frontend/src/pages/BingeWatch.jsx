@@ -11,19 +11,10 @@ const BingeWatch = () => {
     }
   });
 
-  const handleClick = async () => {
-    if (localStorage.getItem("SID")) {
-      localStorage.clear();
-      navigate("/");
-    } else {
-      alert("Bhai kaise karega tu ye");
-    }
-  };
   return (
     <div>
       <h1>Watch Together</h1>
       <Chat />
-      <button onClick={handleClick}>Logout</button>
     </div>
   );
 };

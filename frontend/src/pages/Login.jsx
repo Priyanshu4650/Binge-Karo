@@ -74,31 +74,43 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="App">
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={credentials.username}
-            onChange={handleChange}
-            placeholder="Username"
-            required
-          />
+        <div className="mb-3 row">
+          <label htmlFor="username" class="col-sm-2 col-form-label">
+            Username
+          </label>
+          <div className="col-sm-10">
+            <input
+              id="username"
+              class="col-sm-2 col-form-label"
+              type="text"
+              value={credentials.username}
+              onChange={handleChange}
+              placeholder="Username"
+              required
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={credentials.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-          />
+        <div className="mb-3 row">
+          <label htmlFor="password" className="col-sm-2 col-form-label">
+            Password
+          </label>
+          <div className="col-sm-10">
+            <input
+              id="password"
+              class="col-sm-2 col-form-label"
+              type="password"
+              value={credentials.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+            />
+          </div>
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" class="btn btn-primary">
+          Login
+        </button>
       </form>
       <a href="/register">Do you wanna register?</a>
     </div>
