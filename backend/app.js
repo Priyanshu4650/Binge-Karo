@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import { Server } from "socket.io";
 
 const mongoURL =
   "mongodb+srv://priyanshu022017:vg8SvKqLo1byu4U5@users.zplos5j.mongodb.net/?retryWrites=true&w=majority&appName=Users";
@@ -40,8 +41,37 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.listen(port, () => {
+const expressServer = app.listen(port, () => {
   console.log(`Server listening on PORT: ${port}`);
+});
+// app.listen(port, () => {
+//   console.log(`Server listening on PORT: ${port}`);
+// });
+
+const io = new Server(expressServer, {
+  cors: {
+    origin: [
+      "http://192.168.29.65:3000",
+      "http://localhost:3000",
+      "http://127.0.0.1:5500",
+    ],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`${socket.id} is connected....`);
+
+  // to send a message
+  socket.on("message", (message) => {
+    if (message.substring(0, 5) !== "You: ") {
+      io.emit("message", `${message}`);
+    }
+  });
+
+  // when it gets disconnected
+  socket.on("disconnect", () => {
+    console.log(`${socket.id} got disconnected`);
+  });
 });
 
 app.get("/login", (req, res) => {
@@ -100,48 +130,21 @@ app.get("/people", async (req, res) => {
 });
 
 app.get("/messages/:id", async (req, res) => {
-  const { id } = req.params;
-  console.log(id);
-  const messages = await Messages.find({
-    $or: [{ senderId: id }, { receiverId: id }],
-  }).sort({ time: 1 });
-  return res.json({ success: true, data: messages });
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const messages = await Messages.find({
+      $or: [{ senderId: id }, { receiverId: id }],
+    }).sort({ time: 1 });
+    return res.json({ success: true, data: messages });
+  } catch (e) {}
 });
 
 app.post("/messages", async (req, res) => {
-  const { senderId, receiverId, message } = req.body;
-  const newMessage = new Messages({ senderId, receiverId, message });
-  await newMessage.save();
-  return res.json({ success: true, data: newMessage });
+  try {
+    const { senderId, receiverId, message } = req.body;
+    const newMessage = new Messages({ senderId, receiverId, message });
+    await newMessage.save();
+    return res.json({ success: true, data: newMessage });
+  } catch (e) {}
 });
-
-// import { Server } from "socket.io";
-// const expressServer = app.listen(port, () => {
-//   console.log(`Server listening on PORT: ${port}`);
-// });
-
-// const io = new Server(expressServer, {
-//   cors: {
-//     origin: [
-//       "http://192.168.29.65:3000",
-//       "http://localhost:3000",
-//       "http://127.0.0.1:5500",
-//     ],
-//   },
-// });
-
-// io.on("connection", (socket) => {
-//   console.log(`${socket.id} is connected....`);
-
-//   // to send a message
-//   socket.on("message", (message) => {
-//     if (message.substring(0, 5) !== "You: ") {
-//       io.emit("message", `${message}`);
-//     }
-//   });
-
-//   // when it gets disconnected
-//   socket.on("disconnect", () => {
-//     console.log(`${socket.id} got disconnected`);
-//   });
-// });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [credentials, setCredentials] = useState({
@@ -127,7 +127,7 @@ const Register = () => {
           Login
         </button>
       </form>
-      <a href="/register">Do you wanna register?</a>
+      <Link to="/register">Do you wanna register?</Link>
     </div>
   );
 };
