@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Binge-Karo/static/css/main.e6c13ad2.css",
+    "main.js": "/Binge-Karo/static/js/main.62d075d3.js",
+    "static/js/453.8ab44547.chunk.js": "/Binge-Karo/static/js/453.8ab44547.chunk.js",
+    "index.html": "/Binge-Karo/index.html",
+    "main.e6c13ad2.css.map": "/Binge-Karo/static/css/main.e6c13ad2.css.map",
+    "main.62d075d3.js.map": "/Binge-Karo/static/js/main.62d075d3.js.map",
+    "453.8ab44547.chunk.js.map": "/Binge-Karo/static/js/453.8ab44547.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.62d075d3.js"
+  ]
+}
