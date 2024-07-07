@@ -78,13 +78,13 @@ const Login = () => {
     <div className="App">
       <form onSubmit={handleSubmit}>
         <div className="mb-3 row">
-          <label htmlFor="username" class="col-sm-2 col-form-label">
+          <label htmlFor="username" className="col-sm-2 col-form-label">
             Username
           </label>
           <div className="col-sm-10">
             <input
               id="username"
-              class="col-sm-2 col-form-label"
+              className="col-sm-2 col-form-label"
               type="text"
               value={credentials.username}
               onChange={handleChange}
@@ -100,7 +100,7 @@ const Login = () => {
           <div className="col-sm-10">
             <input
               id="password"
-              class="col-sm-2 col-form-label"
+              className="col-sm-2 col-form-label"
               type="password"
               value={credentials.password}
               onChange={handleChange}
@@ -109,7 +109,7 @@ const Login = () => {
             />
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" className="btn btn-primary">
           Login
         </button>
       </form>

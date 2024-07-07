@@ -78,6 +78,7 @@ const Navbar = () => {
                 </Link>
               </li>
             </ul>
+            <div className="d-flex">{localStorage.getItem("NAME")}</div>
             <div className="d-flex">
               <button
                 className="btn btn-outline-success mb-2"

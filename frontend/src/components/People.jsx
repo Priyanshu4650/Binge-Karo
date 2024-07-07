@@ -39,11 +39,15 @@ const People = () => {
     <div>
       <h1>People</h1>
       <ul>
-        {people.map((person) => (
-          <li key={person._id}>
-            <Link to={`/chat/${person._id}`}>{person.name}</Link>
-          </li>
-        ))}
+        {people.map((person) =>
+          localStorage.getItem("userId") !== person._id ? (
+            <li key={person._id}>
+              <Link to={`/chat/${person._id}`}>{person.name}</Link>
+            </li>
+          ) : (
+            ""
+          )
+        )}
       </ul>
     </div>
   );

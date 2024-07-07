@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:5000");
 
 const Chat = () => {
   const { id } = useParams();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [userId, setUserId] = useState(null); // Set this from the login session
+  const [userId, setUserId] = useState(null);
+  const [receiverName, setReceiverName] = useState("");
 
   useEffect(() => {
+    // Request notification permission
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
     // Fetch the logged-in user ID from localStorage or any other state management
     const fetchUserId = () => {
-      const storedUserId = localStorage.getItem("userId"); // Ensure this is set during login
+      const storedUserId = localStorage.getItem("userId");
       setUserId(storedUserId);
     };
     fetchUserId();
@@ -29,53 +38,88 @@ const Chat = () => {
 
         const json = await response.json();
         setMessages(json.data);
+        setReceiverName(json.receiverName);
+        console.log(json);
       } catch (e) {
         console.error("Fetch messages error:", e);
       }
     };
 
     fetchMessages();
+
+    socket.on("receiveMessage", (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      // Check if the document is hidden
+      if (document.hidden) {
+        showNotification(newMessage.message);
+      }
+    });
+
+    socket.on("messageDeleted", (messageId) => {
+      setMessages((prevMessages) =>
+        prevMessages.filter((msg) => msg._id !== messageId)
+      );
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+      socket.off("messageDeleted");
+    };
   }, [id]);
 
-  const sendMessage = async () => {
-    console.log(userId, id, message);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (message.trim() === "") return;
+    socket.emit("sendMessage", { senderId: userId, receiverId: id, message });
+    setMessage("");
+  };
+
+  const handleDelete = async (messageId) => {
     try {
-      const response = await fetch("http://localhost:5000/messages", {
-        method: "POST",
+      await fetch(`http://localhost:5000/messages/${messageId}`, {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ senderId: userId, receiverId: id, message }),
       });
-      if (!response.ok) {
-        throw new Error("Network response not ok");
-      }
-
-      const json = await response.json();
-      setMessages([...messages, json.data]);
-      setMessage("");
+      socket.emit("deleteMessage", messageId);
     } catch (e) {
-      console.error("Send message error:", e);
+      console.error("Delete message error:", e);
+    }
+  };
+
+  const showNotification = (message) => {
+    if (Notification.permission === "granted") {
+      new Notification("New Message", {
+        body: message,
+      });
     }
   };
 
   return (
     <div>
       <h1>Chat</h1>
-      <div>
-        {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.senderId === userId ? "Me" : "Them"}: </strong>
-            {msg.message}
-          </div>
-        ))}
-      </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button onClick={sendMessage}>Send</button>
+      <form onSubmit={handleSubmit}>
+        <div>
+          {messages.map((msg, index) => (
+            <div key={index}>
+              <strong>{msg.senderId === userId ? "Me" : receiverName}: </strong>
+              {msg.message}
+              {msg.senderId === userId && (
+                <button onClick={() => handleDelete(msg._id)}>Delete</button>
+              )}
+            </div>
+          ))}
+        </div>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <button type="submit" className="btn btn-primary">
+          Send
+        </button>
+      </form>
     </div>
   );
 };

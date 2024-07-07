@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import { Server } from "socket.io";
+import http from "http";
 
 const mongoURL =
   "mongodb+srv://priyanshu022017:vg8SvKqLo1byu4U5@users.zplos5j.mongodb.net/?retryWrites=true&w=majority&appName=Users";
@@ -41,36 +42,37 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const expressServer = app.listen(port, () => {
-  console.log(`Server listening on PORT: ${port}`);
-});
-// app.listen(port, () => {
-//   console.log(`Server listening on PORT: ${port}`);
-// });
-
-const io = new Server(expressServer, {
+const server = http.createServer(app);
+const io = new Server(server, {
   cors: {
-    origin: [
-      "http://192.168.29.65:3000",
-      "http://localhost:3000",
-      "http://127.0.0.1:5500",
-    ],
+    origin: "*",
   },
 });
 
 io.on("connection", (socket) => {
-  console.log(`${socket.id} is connected....`);
+  console.log("New client connected");
 
-  // to send a message
-  socket.on("message", (message) => {
-    if (message.substring(0, 5) !== "You: ") {
-      io.emit("message", `${message}`);
+  socket.on("sendMessage", async ({ senderId, receiverId, message }) => {
+    try {
+      const newMessage = new Messages({ senderId, receiverId, message });
+      await newMessage.save();
+      io.emit("receiveMessage", newMessage);
+    } catch (e) {
+      console.error("Error saving message:", e);
     }
   });
 
-  // when it gets disconnected
+  socket.on("deleteMessage", async (messageId) => {
+    try {
+      await Messages.findByIdAndDelete(messageId);
+      io.emit("messageDeleted", messageId);
+    } catch (e) {
+      console.error("Error deleting message:", e);
+    }
+  });
+
   socket.on("disconnect", () => {
-    console.log(`${socket.id} got disconnected`);
+    console.log("Client disconnected");
   });
 });
 
@@ -132,19 +134,32 @@ app.get("/people", async (req, res) => {
 app.get("/messages/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const messages = await Messages.find({
       $or: [{ senderId: id }, { receiverId: id }],
     }).sort({ time: 1 });
-    return res.json({ success: true, data: messages });
-  } catch (e) {}
+
+    const receiver = await Users.findById(id);
+    return res.json({
+      success: true,
+      data: messages,
+      receiverName: receiver ? receiver.name : "",
+    });
+  } catch (e) {
+    console.error(e.message);
+  }
 });
 
-app.post("/messages", async (req, res) => {
+app.delete("/messages/:messageId", async (req, res) => {
   try {
-    const { senderId, receiverId, message } = req.body;
-    const newMessage = new Messages({ senderId, receiverId, message });
-    await newMessage.save();
-    return res.json({ success: true, data: newMessage });
-  } catch (e) {}
+    const { messageId } = req.params;
+    await Messages.findByIdAndDelete(messageId);
+    return res.json({ success: true, message: "Message deleted successfully" });
+  } catch (e) {
+    console.error(e.message);
+    return res.json({ success: false, message: "An error occurred" });
+  }
+});
+
+server.listen(port, () => {
+  console.log(`Server listening on PORT: ${port}`);
 });
