@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import People from "../components/People";
+// import VideoChat from "../components/VideoChat";
 
 const BingeWatch = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const BingeWatch = () => {
     <div>
       <h1>Watch Together</h1>
       <People />
+      {/* <VideoChat /> */}
     </div>
   );
 };

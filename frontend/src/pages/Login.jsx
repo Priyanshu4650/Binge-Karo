@@ -20,15 +20,12 @@ const Login = () => {
   useEffect(() => {
     const fetchTitle = async () => {
       try {
-        const response = await fetch(
-          "https://binge-karo-5.onrender.com/login",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch("http://localhost:5000/login", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         if (!response.ok) {
           throw new Error("Network response not ok");
         }
@@ -47,7 +44,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://binge-karo-5.onrender.com/login", {
+      const response = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

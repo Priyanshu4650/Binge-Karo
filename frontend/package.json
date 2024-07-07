@@ -4,7 +4,8 @@
   "private": true,
   "homepage": "https://Priyanshu4650.github.io/Binge-Karo",
   "proxy": [
-    "https://binge-karo-5.onrender.com"
+    "https://binge-karo-5.onrender.com",
+    "http://localhost:5000"
   ],
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",

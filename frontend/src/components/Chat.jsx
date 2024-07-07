@@ -79,7 +79,7 @@ const Chat = () => {
 
   const handleDelete = async (messageId) => {
     try {
-      await fetch(`https://binge-karo-5.onrender.com/messages/${messageId}`, {
+      await fetch(`http://localhost:5000/messages/${messageId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

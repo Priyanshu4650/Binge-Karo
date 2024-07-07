@@ -8,15 +8,12 @@ const People = () => {
   useEffect(() => {
     const fetchPeople = async () => {
       try {
-        const response = await fetch(
-          "https://binge-karo-5.onrender.com/people",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch("http://localhost:5000/people", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         if (!response.ok) {
           throw new Error("Network response not ok");
         }
