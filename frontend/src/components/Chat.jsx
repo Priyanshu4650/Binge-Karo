@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://binge-karo-5.onrender.com");
 
 const Chat = () => {
   const { id } = useParams();
@@ -26,12 +26,15 @@ const Chat = () => {
 
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/messages/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `https://binge-karo-5.onrender.com/messages/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error("Network response not ok");
         }
@@ -76,7 +79,7 @@ const Chat = () => {
 
   const handleDelete = async (messageId) => {
     try {
-      await fetch(`http://localhost:5000/messages/${messageId}`, {
+      await fetch(`https://binge-karo-5.onrender.com/messages/${messageId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

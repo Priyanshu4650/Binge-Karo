@@ -21,12 +21,15 @@ const Register = () => {
   useEffect(() => {
     const fetchTitle = async () => {
       try {
-        const response = await fetch("http://localhost:5000/register", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          "https://binge-karo-5.onrender.com/register",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error("Network response not ok");
         }
